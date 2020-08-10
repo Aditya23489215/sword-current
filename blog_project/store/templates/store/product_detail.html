@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+{% block content %}
+  <article class="media content-section">
+    <img style='width:250px; height:250px;' class="article-img" src="{{ object.image.url }}">
+    <div class="media-body">
+      <div class="article-metadata">
+        <small class="text-muted">{{ object.date|date:"F d, Y" }}</small>
+      </div>
+      <h1 class="article-title">{{ object.title }}</h1>
+      <h4>${{ object.price }}</h4>
+      <p class="article-content">{{ object.about }}</p>
+      <p class="article-content">{{ object.discription }}</p>
+    </div>
+  </article>
+  {% if user.is_superuser %}
+    <a class="btn btn-success mt-1 mb-1" href="{% url 'store_item_update' pk=object.id %}">Update</a>
+  {% endif %}
+{% endblock content %}

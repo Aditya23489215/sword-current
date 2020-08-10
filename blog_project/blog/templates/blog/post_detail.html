@@ -1,0 +1,53 @@
+{% extends "blog/base.html" %}
+{% block content %}
+  <article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ object.author.profile.profile_pic.url }}">
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
+        <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
+        {% if object.author == user %}
+          <div>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update</a>
+            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete</a>
+          </div>
+        {% endif %}
+      </div>
+      <h2 class="article-title">{{ object.title }}</h2>
+      <p class="article-content">{{ object.content }}</p>
+    </div>
+  </article>
+  {% for reply in reply_list %}
+  <div class={{reply.color_style}} style="margin-left:{{reply.left_margin}}px; width:500px; margin-top:10px; box-sizing:border-box; border:1px solid #ccc; border-radius:4px;">
+    <p style="color:white; display:inline;" class="w-70% ml-2">{{reply.message}}</p>
+    <button class="kyy" data-id="{{reply.id}}" style="outline:none; background-color:inherit; border:0; cursor:pointer;">Reply</button>
+    <a href="{% url 'delete-reply' pk=reply.id v=object.id %}">Delete</a>
+    <div style="display: none;" id="{{reply.id}}">
+      <form style="display:inline;" method="POST" action="{%url 'reply' pk=reply.id v=object.id%}">
+        {% csrf_token %}
+        <input style="border:0; border-radius:4px; margin-left:3px;" type="text" name="message" placeholder="Type your reply here.." required/>
+        <input class="btn btn-success btn-sm" style="border-radius:4px; margin-bottom:6px;" type="submit" value="submit"/>
+      </form>
+      <button class="btn btn-primary btn-sm shyy" style="border-radius:4px; margin-bottom:6px;" type="submit" data-id="{{reply.id}}" value="submit">cancel</button>
+    </div>
+  </div>
+  {% endfor %}
+
+<script type="text/javascript">
+  var list = document.getElementsByClassName("kyy")
+  for(var i=0;i<list.length;i++){
+    list[i].addEventListener('click',function(){
+    var formid = this.dataset.id
+    document.getElementById(formid).style.removeProperty( 'display' );
+  })
+  }
+  var nist = document.getElementsByClassName("shyy")
+  for(var i=0;i<nist.length;i++){
+    nist[i].addEventListener('click',function(){
+    var cancelid = this.dataset.id
+    document.getElementById(cancelid).style.display = "none";
+  })
+  }
+</script>
+
+{% endblock content %}

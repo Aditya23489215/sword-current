@@ -1,0 +1,67 @@
+{% extends "blog/base.html" %}
+{% block content %}
+{% load static %}
+<div class="container" style="margin: auto;  width: 60%;  padding: 10px; min-width:300px;">
+<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+<div class="container" style="margin: auto; margin-top: 20px; width: 60%;  padding: 10px;">
+  <form action='{% url 'learning' %}' method="POST">
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" class="btn btn-success" style="border-radius:5px; margin-left:4px;" value="submit"/>
+  </form>
+</div>
+<div class="container" style="margin: auto;  width: 60%;  padding: 10px;">
+  {% if value %}
+    <p>Your salary will be: ${{value}}</p>
+    <p>right? if no then input the correct value.</p>
+
+  <form action='{% url 'save_object' age=age %}' method="POST">
+    {% csrf_token %}
+    <input type="number" name="salary" placeholder="Salary" required/>
+    <input type="submit" class="btn btn-success" style="border-radius:5px; margin-left:4px;" value="submit"/>
+  </form>
+  {% endif %}
+</div>
+</div>
+<script type="text/javascript" src="{% static 'canvasjs.min.js' %}"></script>
+<script type="text/javascript">
+window.onload = function () {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+  animationEnabled: true,
+  zoomEnabled: true,
+  title:{
+    text: "Artificial Intelligence"
+  },
+  axisX: {
+    title:"Age",
+    minimum: 0,
+    maximum: 100
+  },
+  axisY:{
+    title: "Salary (in USD)",
+    minimum: 0,
+    maximum: 150000,
+    valueFormatString: "$#,##0"
+  },
+  data: [{
+    type: "scatter",
+    toolTipContent: "<b>Age: </b>{x}<br/><b>Salary: </b>${y}",
+    dataPoints: {{entries|safe}}
+  },
+  {
+    type: "line",
+    lineColor: "purple",
+    toolTipContent: "<b>Coeff: </b>{{coeff}}<br/><b>Intercept: </b>{{intercept}}",
+    indexLabelFontSize: 16,
+    dataPoints: [
+      { y: {{coeff}}*100+{{intercept}}, x:100 },
+      { y: {{intercept}}, x:0 },
+    ]
+  }]
+});
+chart.render();
+
+}
+</script>
+{% endblock %}
