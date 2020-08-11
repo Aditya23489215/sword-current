@@ -6,17 +6,17 @@
       <div class="article-metadata">
         <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
         <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
+      </div>
+      <h2 class="article-title">{{ object.title }}</h2>
+      <p class="article-content">{{ object.text }}</p>
+    </div>
+  </article>
         {% if object.author == user %}
           <div>
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update</a>
             <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete</a>
           </div>
         {% endif %}
-      </div>
-      <h2 class="article-title">{{ object.title }}</h2>
-      <p class="article-content">{{ object.text }}</p>
-    </div>
-  </article>
   {% for reply in reply_list %}
   <div class={{reply.color_style}} style="margin-left:{{reply.left_margin}}px; width:500px; margin-top:10px; box-sizing:border-box; border:1px solid #ccc; border-radius:4px;">
     <p style="color:white; display:inline;" class="w-70% ml-2">{{reply.message}}</p>
